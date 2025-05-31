@@ -18,8 +18,8 @@ class DnsUtils
 
     public static function ipV6Shortener(string $ipv6): string
     {
-        if (substr($ipv6, -2) != ':0') {
-            return preg_replace("/:0{1,3}/", ":", $ipv6);
+        if (substr($ipv6, -2) !== ':0') {
+            return inet_ntop(inet_pton($ipv6));
         }
         return $ipv6;
     }
