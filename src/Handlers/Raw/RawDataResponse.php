@@ -9,6 +9,8 @@ use BlueLibraries\Dns\Records\DnsUtils;
 
 class RawDataResponse
 {
+    /** RCODE values meaning the query was not processed: FORMERR, NOTIMP, REFUSED (RFC 1035) */
+    private const REJECTED_RESPONSE_CODES = [1, 4, 5];
 
     private RawDataRequest $request;
     private ?string $rawResponse = null;
@@ -60,6 +62,30 @@ class RawDataResponse
                 DnsHandlerException::TRUNCATION_DETECTED
             );
         }
+
+        // FORMERR, NOTIMP and REFUSED say nothing about the domain: the server did not process the
+        // query at all. Without this check such a response looks exactly like "no records".
+        // NXDOMAIN and SERVFAIL are left to the caller as an empty answer.
+        $responseCode = $this->getHeaderResponseCode();
+
+        if (in_array($responseCode, self::REJECTED_RESPONSE_CODES, true)) {
+            throw new DnsHandlerException(
+                'Query rejected by nameserver, response code: ' . $responseCode .
+                ' domain: ' . json_encode($this->request->getDomain()) .
+                ' typeId: ' . json_encode($this->request->getTypeId()),
+                DnsHandlerException::ERR_QUERY_REJECTED
+            );
+        }
+    }
+
+    /**
+     * RCODE from the header, null when the response has no header
+     *
+     * @return int|null
+     */
+    private function getHeaderResponseCode(): ?int
+    {
+        return isset($this->headerData['spec']) ? $this->headerData['spec'] & 0x000F : null;
     }
 
     private function getHeaderAnswersCount(): int

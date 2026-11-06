@@ -208,8 +208,7 @@ class RawDataRequest
             $this->getBinaryRecursionAvailable() .
             $this->getBinaryQuestion() .
             $this->getBinaryType() .
-            $this->getBinaryClass() .
-            $this->getTtl();
+            $this->getBinaryClass();
     }
 
     protected function getBinaryId(): string
@@ -285,11 +284,6 @@ class RawDataRequest
         }
 
         return pack('n', $this->classId);
-    }
-
-    protected function getTtl()
-    {
-        return pack('N', $this->timeout);
     }
 
     public function getBinaryHeaderLength(int $headerLength)

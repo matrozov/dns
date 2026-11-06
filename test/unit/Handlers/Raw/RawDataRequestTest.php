@@ -77,12 +77,12 @@ class RawDataRequestTest extends TestCase
     public static function generateHeaderDataProvider(): array
     {
         return [
-            ['1.1.1.1', RecordTypes::A, RawClassTypes::IN, '01100100000071051104597100100114497114112971491491491490010100030'],
-            ['test.com', RecordTypes::A, RawClassTypes::IN, '01100100000041161011151163991111090010100030'],
-            ['test.com', RecordTypes::NS, RawClassTypes::IN, '01100100000041161011151163991111090020100030'],
-            ['test.com', RecordTypes::TXT, RawClassTypes::IN, '011001000000411610111511639911110900160100030'],
-            ['test.com', RecordTypes::RRSIG, RawClassTypes::IN, '011001000000411610111511639911110900460100030'],
-            ['', RecordTypes::A, RawClassTypes::IN, '011001000000010100030'],
+            ['1.1.1.1', RecordTypes::A, RawClassTypes::IN, '011001000000710511045971001001144971141129714914914914900101'],
+            ['test.com', RecordTypes::A, RawClassTypes::IN, '011001000000411610111511639911110900101'],
+            ['test.com', RecordTypes::NS, RawClassTypes::IN, '011001000000411610111511639911110900201'],
+            ['test.com', RecordTypes::TXT, RawClassTypes::IN, '0110010000004116101115116399111109001601'],
+            ['test.com', RecordTypes::RRSIG, RawClassTypes::IN, '0110010000004116101115116399111109004601'],
+            ['', RecordTypes::A, RawClassTypes::IN, '0110010000000101'],
         ];
     }
 

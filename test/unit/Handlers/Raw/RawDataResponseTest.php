@@ -185,4 +185,49 @@ class RawDataResponseTest extends TestCase
         self::assertSame([], $subject->getData());
     }
 
+    /**
+     * Response without answers to an NS query for kompozit-expert.ru with the given RCODE
+     */
+    private static function responseWithCode(int $responseCode): string
+    {
+        return hex2bin('884a' . sprintf('%04x', 0x8100 | $responseCode) . '00010000000000000f6b6f6d706f7a69742d6578706572740272750000020001');
+    }
+
+    public static function rejectedResponseCodeDataProvider(): array
+    {
+        return [
+            'FORMERR' => [1],
+            'NOTIMP'  => [4],
+            'REFUSED' => [5],
+        ];
+    }
+
+    /**
+     * @dataProvider rejectedResponseCodeDataProvider
+     */
+    public function testRejectedResponseCodeThrowsException(int $responseCode)
+    {
+        $this->expectException(DnsHandlerException::class);
+        $this->expectExceptionCode(DnsHandlerException::ERR_QUERY_REJECTED);
+        new RawDataResponse($this->request, self::responseWithCode($responseCode), DnsHandlerTypes::UDP);
+    }
+
+    public static function emptyAnswerResponseCodeDataProvider(): array
+    {
+        return [
+            'NOERROR'  => [0],
+            'SERVFAIL' => [2],
+            'NXDOMAIN' => [3],
+        ];
+    }
+
+    /**
+     * @dataProvider emptyAnswerResponseCodeDataProvider
+     */
+    public function testAnswerResponseCodeIsEmptyAnswer(int $responseCode)
+    {
+        $subject = new RawDataResponse($this->request, self::responseWithCode($responseCode), DnsHandlerTypes::UDP);
+        $this->assertSame([], $subject->getData());
+    }
+
 }

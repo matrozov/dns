@@ -23,4 +23,5 @@ class DnsHandlerException extends Exception
     const TYPE_ID_NOT_SUPPORTED = 17;
     const ERR_INVALID_RECORD_HEADER_LENGTH = 18;
     const TYPE_ID_NOT_IMPLEMENTED = 19;
+    const ERR_QUERY_REJECTED = 20;
 }
